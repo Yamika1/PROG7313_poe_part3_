@@ -335,6 +335,45 @@
                 android:textColor="#000000"
                 android:textColorHint="#BDBDBD"
                 android:textSize="14sp" />
+            <!-- RECEIPT UPLOAD -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:letterSpacing="0.12"
+                android:text="RECEIPT / PROOF OF EXPENSE"
+                android:textColor="#555555"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/buttonUploadReceipt"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_yellow_button"
+                android:text="Upload Receipt / Screenshot / PDF"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imageViewReceiptPreview"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginBottom="8dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/textViewSelectedReceipt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="No receipt uploaded"
+                android:textColor="#777777"
+                android:textSize="14sp" />
 
         </LinearLayout>
     </ScrollView>
