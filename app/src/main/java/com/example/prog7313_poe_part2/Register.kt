@@ -13,9 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
-import data.database.AppDatabase
-import data.User
+
 
 class Register : AppCompatActivity(){
 
@@ -32,7 +32,7 @@ class Register : AppCompatActivity(){
     private lateinit var buttonRegister : Button
 
     private lateinit var imageButtonProfilePic : ImageButton
-    private lateinit var db: AppDatabase
+    private lateinit var auth: FirebaseAuth
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +50,7 @@ class Register : AppCompatActivity(){
         editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword)
         buttonLogin = findViewById(R.id.buttonLogin)
         buttonRegister = findViewById(R.id.buttonRegister)
-        db = AppDatabase.getDatabase(this)
+        auth = FirebaseAuth.getInstance()
 
         heading.paintFlags = Paint.UNDERLINE_TEXT_FLAG
 
@@ -91,36 +91,6 @@ class Register : AppCompatActivity(){
         if (password != confirmPassword) {
             Toast.makeText(this, "Passwords don't match", Toast.LENGTH_SHORT).show()
             return
-        }
-
-
-        lifecycleScope.launch {
-            val existingUser = db.userDao().getUserByUsername(userName)
-
-
-            if (existingUser != null) {
-
-                runOnUiThread {
-                    Toast.makeText(this@Register, "This username already exists", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-
-
-                val newUser = User(
-                    firstName = firstName,
-                    lastName = lastName,
-                    email = email,
-                    username = userName,
-                    password = password
-                )
-
-
-                db.userDao().insertUser(newUser)
-
-
-                runOnUiThread {
-                    Toast.makeText(this@Register, "New account successfully created", Toast.LENGTH_SHORT)
-                        .show()
 
                     clearFields()
                     openLoginScreen()
@@ -128,8 +98,6 @@ class Register : AppCompatActivity(){
             }
 
 
-        }
-    }
 
 
     private fun openLoginScreen() {

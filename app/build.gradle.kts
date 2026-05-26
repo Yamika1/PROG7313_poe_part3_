@@ -2,7 +2,7 @@ import org.gradle.kotlin.dsl.version
 
 plugins {
     alias(libs.plugins.android.application)
-    id("com.google.devtools.ksp") version "2.3.6"
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -42,6 +42,8 @@ dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.database)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
@@ -49,11 +51,5 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    val roomVersion = "2.8.4"
 
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
-
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
 }

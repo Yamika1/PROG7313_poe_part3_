@@ -1,6 +1,5 @@
 package com.example.prog7313_poe_part2
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
 import android.net.Uri
@@ -15,25 +14,29 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
-import data.database.AppDatabase
-import kotlinx.coroutines.launch
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class ExpenseSearch : AppCompatActivity() {
 
     private lateinit var editTextStartDate: EditText
     private lateinit var editTextEndDate: EditText
     private lateinit var buttonSearch: Button
-    private lateinit var textViewSearchResults: TextView
     private lateinit var results: LinearLayout
-    private lateinit var db: AppDatabase
+
+    data class Expense(
+        val id: String = "",
+        val category: String = "",
+        val amount: Double = 0.0,
+        val date: String = "",
+        val description: String = "",
+        val photoUri: String = ""
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_expense_search)
-
-        db = AppDatabase.getDatabase(this)
 
         editTextStartDate = findViewById(R.id.editTextStartDate)
         editTextEndDate = findViewById(R.id.editTextEndDate)
@@ -69,8 +72,11 @@ class ExpenseSearch : AppCompatActivity() {
                 val formattedDay = String.format("%02d", selectedDay)
                 val selectedDate = "$selectedYear-$formattedMonth-$formattedDay"
 
-                if (isStartDate) editTextStartDate.setText(selectedDate)
-                else editTextEndDate.setText(selectedDate)
+                if (isStartDate) {
+                    editTextStartDate.setText(selectedDate)
+                } else {
+                    editTextEndDate.setText(selectedDate)
+                }
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -79,41 +85,62 @@ class ExpenseSearch : AppCompatActivity() {
     }
 
     private fun searchExpenses() {
-        val startDate = editTextStartDate.text.toString()
-        val endDate = editTextEndDate.text.toString()
+        val startDate = editTextStartDate.text.toString().trim()
+        val endDate = editTextEndDate.text.toString().trim()
 
         if (startDate.isEmpty() || endDate.isEmpty()) {
             Toast.makeText(this, "Please enter both start and end dates", Toast.LENGTH_SHORT).show()
             return
         }
 
-        lifecycleScope.launch {
-            val expenseResults = db.costDao().getEntriesInRange(startDate, endDate)
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
 
-            runOnUiThread {
+        if (uid == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        FirebaseDatabase.getInstance()
+            .getReference("users")
+            .child(uid)
+            .child("expenses")
+            .get()
+            .addOnSuccessListener { snapshot ->
                 results.removeAllViews()
 
+                val expenseResults = mutableListOf<Expense>()
+
+                for (expenseSnapshot in snapshot.children) {
+                    val expense = expenseSnapshot.getValue(Expense::class.java)
+
+                    if (expense != null && expense.date >= startDate && expense.date <= endDate) {
+                        expenseResults.add(expense)
+                    }
+                }
+
                 if (expenseResults.isEmpty()) {
-                    val noResultsText = TextView(this@ExpenseSearch).apply {
+                    val noResultsText = TextView(this).apply {
                         text = "No expenses found for the selected period"
                         textSize = 16f
                     }
                     results.addView(noResultsText)
-                    return@runOnUiThread
+                    return@addOnSuccessListener
                 }
 
                 for (expense in expenseResults) {
-                    val expenseText = TextView(this@ExpenseSearch).apply {
+                    val expenseText = TextView(this).apply {
                         text = "Category: ${expense.category}\n" +
                                 "Amount: R${expense.amount}\n" +
                                 "Date: ${expense.date}\n" +
                                 "Description: ${expense.description}"
                         textSize = 16f
+                        setPadding(0, 16, 0, 8)
                     }
+
                     results.addView(expenseText)
 
-                    if (expense.photoUri != null) {
-                        val imageView = ImageView(this@ExpenseSearch).apply {
+                    if (expense.photoUri.isNotEmpty()) {
+                        val imageView = ImageView(this).apply {
                             layoutParams = LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -126,7 +153,7 @@ class ExpenseSearch : AppCompatActivity() {
                             imageView.setImageURI(Uri.parse(expense.photoUri))
                             results.addView(imageView)
                         } catch (e: Exception) {
-                            val imageErrorText = TextView(this@ExpenseSearch).apply {
+                            val imageErrorText = TextView(this).apply {
                                 text = "Image could not be loaded"
                                 textSize = 14f
                             }
@@ -135,6 +162,12 @@ class ExpenseSearch : AppCompatActivity() {
                     }
                 }
             }
-        }
+            .addOnFailureListener { error ->
+                Toast.makeText(
+                    this,
+                    "Failed to search expenses: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 }
