@@ -12,28 +12,24 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
+import com.google.firebase.database.FirebaseDatabase
 
-
-class Register : AppCompatActivity(){
+class Register : AppCompatActivity() {
 
     private lateinit var heading: TextView
     private lateinit var editTextFName: EditText
     private lateinit var editTextLName: EditText
-    private lateinit var editTextUsername : EditText
-    private lateinit var editTextEmail : EditText
+    private lateinit var editTextUsername: EditText
+    private lateinit var editTextEmail: EditText
     private lateinit var editTextPassword: EditText
     private lateinit var editTextConfirmPassword: EditText
 
-    private lateinit var buttonLogin : Button
+    private lateinit var buttonLogin: Button
+    private lateinit var buttonRegister: Button
+    private lateinit var imageButtonProfilePic: ImageButton
 
-    private lateinit var buttonRegister : Button
-
-    private lateinit var imageButtonProfilePic : ImageButton
     private lateinit var auth: FirebaseAuth
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +46,10 @@ class Register : AppCompatActivity(){
         editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword)
         buttonLogin = findViewById(R.id.buttonLogin)
         buttonRegister = findViewById(R.id.buttonRegister)
+
         auth = FirebaseAuth.getInstance()
 
         heading.paintFlags = Paint.UNDERLINE_TEXT_FLAG
-
 
         buttonRegister.setOnClickListener {
             registerUser()
@@ -71,7 +67,6 @@ class Register : AppCompatActivity(){
     }
 
     private fun registerUser() {
-
         val firstName = editTextFName.text.toString().trim()
         val lastName = editTextLName.text.toString().trim()
         val email = editTextEmail.text.toString().trim()
@@ -79,35 +74,79 @@ class Register : AppCompatActivity(){
         val password = editTextPassword.text.toString().trim()
         val confirmPassword = editTextConfirmPassword.text.toString().trim()
 
-
-
-
-        if (firstName.isEmpty() || lastName.isEmpty()|| email.isEmpty() || userName.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+        if (
+            firstName.isEmpty() ||
+            lastName.isEmpty() ||
+            email.isEmpty() ||
+            userName.isEmpty() ||
+            password.isEmpty() ||
+            confirmPassword.isEmpty()
+        ) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             return
+        }
 
+        if (password.length < 6) {
+            Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
+            return
         }
 
         if (password != confirmPassword) {
             Toast.makeText(this, "Passwords don't match", Toast.LENGTH_SHORT).show()
             return
+        }
 
-                    clearFields()
-                    openLoginScreen()
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                val uid = auth.currentUser?.uid
+
+                if (uid == null) {
+                    Toast.makeText(this, "Could not get user ID", Toast.LENGTH_SHORT).show()
+                    return@addOnSuccessListener
                 }
+
+                val userProfile = mapOf(
+                    "uid" to uid,
+                    "firstName" to firstName,
+                    "lastName" to lastName,
+                    "username" to userName,
+                    "email" to email
+                )
+
+                FirebaseDatabase.getInstance()
+                    .getReference("users")
+                    .child(uid)
+                    .child("profile")
+                    .setValue(userProfile)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show()
+                        clearFields()
+                        openLoginScreen()
+                    }
+                    .addOnFailureListener { error ->
+                        Toast.makeText(
+                            this,
+                            "Profile save failed: ${error.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
             }
-
-
-
+            .addOnFailureListener { error ->
+                Toast.makeText(
+                    this,
+                    "Registration failed: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
 
     private fun openLoginScreen() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
-
     }
 
-    private fun clearFields(){
+    private fun clearFields() {
         editTextFName.text.clear()
         editTextLName.text.clear()
         editTextUsername.text.clear()

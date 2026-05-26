@@ -11,11 +11,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var textView: TextView
     private lateinit var editTextText: EditText
     private lateinit var editTextText2: EditText
@@ -23,11 +22,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var button2: Button
     private lateinit var auth: FirebaseAuth
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
         auth = FirebaseAuth.getInstance()
 
         textView = findViewById(R.id.textView)
@@ -35,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         editTextText2 = findViewById(R.id.editTextText2)
         button = findViewById(R.id.button)
         button2 = findViewById(R.id.button2)
+
         textView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
 
         button.setOnClickListener {
@@ -46,32 +46,34 @@ class MainActivity : AppCompatActivity() {
             } else {
                 login(email, password)
             }
+        }
 
-            button2.setOnClickListener {
-                val intent = Intent(this, Register::class.java)
-                startActivity(intent)
-            }
+        button2.setOnClickListener {
+            val intent = Intent(this, Register::class.java)
+            startActivity(intent)
+        }
 
-            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-                insets
-            }
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
         }
     }
 
     private fun login(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
-            if (task.isSuccessful) {
-                Toast.makeText(this, "Welcome Back!", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, Home::class.java))
-                finish()
-            } else {
-                Toast.makeText(this, "Login Failed ", Toast.LENGTH_SHORT)
-                    .show()
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "Welcome Back!", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, Home::class.java))
+                    finish()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Login Failed: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
-        }
     }
-
-
 }
