@@ -8,28 +8,34 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
-import data.CycleGoal
-import data.database.AppDatabase
-import kotlinx.coroutines.launch
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class UserGoals : AppCompatActivity() {
 
     private lateinit var minimum: EditText
     private lateinit var maximum: EditText
     private lateinit var save: Button
-    private lateinit var db: AppDatabase
+
+    data class Goal(
+        val month: String = "",
+        val minGoal: Double = 0.0,
+        val maxGoal: Double = 0.0
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_user_goals)
 
-        db = AppDatabase.getDatabase(this)
-
         minimum = findViewById(R.id.minimum)
         maximum = findViewById(R.id.maximum)
         save = findViewById(R.id.save)
+
+        loadCurrentGoal()
 
         save.setOnClickListener {
             saveGoals()
@@ -64,31 +70,61 @@ class UserGoals : AppCompatActivity() {
             return
         }
 
-        val currentMonth = java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault())
-            .format(java.util.Date())
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
 
-        lifecycleScope.launch {
-            val existingGoal = db.cycleDao().getLatestCycleGoal()
-
-            if (existingGoal == null) {
-                val newGoal = CycleGoal(
-                    minGoal = minGoal,
-                    maxGoal = maxGoal,
-                    month = currentMonth
-                )
-                db.cycleDao().insertCycleGoal(newGoal)
-            } else {
-                val updatedGoal = existingGoal.copy(
-                    minGoal = minGoal,
-                    maxGoal = maxGoal
-                )
-                db.cycleDao().updateCycleGoal(updatedGoal)
-            }
-
-            Toast.makeText(this@UserGoals, "Goals saved successfully", Toast.LENGTH_SHORT).show()
-
-            minimum.text.clear()
-            maximum.text.clear()
+        if (uid == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+            return
         }
+
+        val currentMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
+
+        val goal = Goal(
+            month = currentMonth,
+            minGoal = minGoal,
+            maxGoal = maxGoal
+        )
+
+        FirebaseDatabase.getInstance()
+            .getReference("users")
+            .child(uid)
+            .child("goals")
+            .child(currentMonth)
+            .setValue(goal)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Goals saved successfully", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { error ->
+                Toast.makeText(this, "Failed to save goals: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun loadCurrentGoal() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (uid == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val currentMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
+
+        FirebaseDatabase.getInstance()
+            .getReference("users")
+            .child(uid)
+            .child("goals")
+            .child(currentMonth)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val goal = snapshot.getValue(Goal::class.java)
+
+                if (goal != null) {
+                    minimum.setText(goal.minGoal.toString())
+                    maximum.setText(goal.maxGoal.toString())
+                }
+            }
+            .addOnFailureListener { error ->
+                Toast.makeText(this, "Failed to load goals: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }

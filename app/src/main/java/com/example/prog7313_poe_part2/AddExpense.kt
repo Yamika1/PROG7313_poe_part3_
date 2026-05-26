@@ -9,10 +9,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import data.Cost
-import data.database.AppDatabase
-import kotlinx.coroutines.launch
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class AddExpense : AppCompatActivity() {
 
@@ -29,15 +27,11 @@ class AddExpense : AppCompatActivity() {
     private lateinit var buttonSaveExpense: Button
     private lateinit var buttonCancel: TextView
 
-    private lateinit var db: AppDatabase
-
     private var selectedCategory = "Groceries"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_expense)
-
-        db = AppDatabase.getDatabase(this)
 
         editTextAmount = findViewById(R.id.editTextAmount)
         editTextDate = findViewById(R.id.editTextDate)
@@ -83,6 +77,8 @@ class AddExpense : AppCompatActivity() {
         buttonCancel.setOnClickListener {
             finish()
         }
+
+        selectCategory(rowGroceries, "Groceries")
     }
 
     private fun selectCategory(selectedRow: LinearLayout, category: String) {
@@ -102,33 +98,55 @@ class AddExpense : AppCompatActivity() {
         val description = editTextDescription.text.toString().trim()
 
         if (amountText.isEmpty() || date.isEmpty() || description.isEmpty()) {
-            Toast.makeText(this, "please fill in all the required fields", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please fill in all the required fields", Toast.LENGTH_SHORT).show()
             return
         }
 
         val amount = amountText.toDoubleOrNull()
 
-        if (amount == null) {
-            Toast.makeText(this, "please enter a valid amount", Toast.LENGTH_SHORT).show()
+        if (amount == null || amount <= 0) {
+            Toast.makeText(this, "Please enter a valid amount", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val cost = Cost(
-            category = selectedCategory,
-            amount = amount,
-            date = date,
-            description = description
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (uid == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val databaseRef = FirebaseDatabase.getInstance()
+            .getReference("users")
+            .child(uid)
+            .child("expenses")
+
+        val expenseId = databaseRef.push().key
+
+        if (expenseId == null) {
+            Toast.makeText(this, "Could not create expense ID", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val expense = mapOf(
+            "id" to expenseId,
+            "category" to selectedCategory,
+            "amount" to amount,
+            "date" to date,
+            "description" to description,
+            "photoUri" to ""
         )
 
-        lifecycleScope.launch {
-            db.costDao().insertCost(cost)
-
-            runOnUiThread {
-                Toast.makeText(this@AddExpense, "expense saved successfully", Toast.LENGTH_SHORT).show()
+        databaseRef.child(expenseId)
+            .setValue(expense)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Expense saved successfully", Toast.LENGTH_SHORT).show()
                 clearFields()
                 finish()
             }
-        }
+            .addOnFailureListener { error ->
+                Toast.makeText(this, "Failed to save expense: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun clearFields() {
