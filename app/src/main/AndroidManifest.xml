@@ -29,12 +29,7 @@
         <activity
             android:name=".Rewards"
             android:exported="false" />
-        <activity
-            android:name=".Take_photo"
-            android:exported="false" />
-        <activity
-            android:name=".Costs"
-            android:exported="false" />
+
         <activity
             android:name=".AddExpense"
             android:exported="false" />
