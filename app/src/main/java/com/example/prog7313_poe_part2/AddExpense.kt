@@ -1,13 +1,18 @@
 package com.example.prog7313_poe_part2
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.icu.util.Calendar
+import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -27,7 +32,38 @@ class AddExpense : AppCompatActivity() {
     private lateinit var buttonSaveExpense: Button
     private lateinit var buttonCancel: TextView
 
+    private lateinit var buttonUploadReceipt: Button
+    private lateinit var imageViewReceiptPreview: ImageView
+    private lateinit var textViewSelectedReceipt: TextView
+
     private var selectedCategory = "Groceries"
+    private var selectedReceiptUri = ""
+    private var selectedReceiptType = ""
+
+    private val uploadReceiptLauncher =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+            if (uri != null) {
+                contentResolver.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+
+                selectedReceiptUri = uri.toString()
+
+                val mimeType = contentResolver.getType(uri)
+
+                if (mimeType == "application/pdf") {
+                    selectedReceiptType = "pdf"
+                    imageViewReceiptPreview.visibility = View.GONE
+                    textViewSelectedReceipt.text = "PDF receipt attached"
+                } else {
+                    selectedReceiptType = "image"
+                    imageViewReceiptPreview.visibility = View.VISIBLE
+                    imageViewReceiptPreview.setImageURI(uri)
+                    textViewSelectedReceipt.text = "Image receipt attached"
+                }
+            }
+        }
 
 
 
@@ -47,6 +83,10 @@ class AddExpense : AppCompatActivity() {
 
         buttonSaveExpense = findViewById(R.id.buttonSaveExpense)
         buttonCancel = findViewById(R.id.buttonCancel)
+
+        buttonUploadReceipt = findViewById(R.id.buttonUploadReceipt)
+        imageViewReceiptPreview = findViewById(R.id.imageViewReceiptPreview)
+        textViewSelectedReceipt = findViewById(R.id.textViewSelectedReceipt)
 
         editTextDate.setOnClickListener {
             showDatePicker()
@@ -70,6 +110,15 @@ class AddExpense : AppCompatActivity() {
 
         rowOther.setOnClickListener {
             selectCategory(rowOther, "Other")
+        }
+
+        buttonUploadReceipt.setOnClickListener {
+            uploadReceiptLauncher.launch(
+                arrayOf(
+                    "image/*",
+                    "application/pdf"
+                )
+            )
         }
 
         buttonSaveExpense.setOnClickListener {
@@ -136,7 +185,8 @@ class AddExpense : AppCompatActivity() {
             "amount" to amount,
             "date" to date,
             "description" to description,
-            "photoUri" to ""
+            "receiptUri" to selectedReceiptUri,
+            "receiptType" to selectedReceiptType
         )
 
         databaseRef.child(expenseId)
@@ -155,6 +205,12 @@ class AddExpense : AppCompatActivity() {
         editTextAmount.text.clear()
         editTextDate.text.clear()
         editTextDescription.text.clear()
+
+        selectedReceiptUri = ""
+        selectedReceiptType = ""
+        imageViewReceiptPreview.visibility = View.GONE
+        textViewSelectedReceipt.text = "No receipt uploaded"
+
         selectCategory(rowGroceries, "Groceries")
     }
 

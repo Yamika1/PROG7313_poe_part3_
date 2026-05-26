@@ -1,9 +1,12 @@
 package com.example.prog7313_poe_part2
 
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.graphics.Typeface
 import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -30,6 +33,8 @@ class ExpenseSearch : AppCompatActivity() {
         val amount: Double = 0.0,
         val date: String = "",
         val description: String = "",
+        val receiptUri: String = "",
+        val receiptType: String = "",
         val photoUri: String = ""
     )
 
@@ -122,44 +127,15 @@ class ExpenseSearch : AppCompatActivity() {
                     val noResultsText = TextView(this).apply {
                         text = "No expenses found for the selected period"
                         textSize = 16f
+                        gravity = Gravity.CENTER
+                        setPadding(0, 20, 0, 20)
                     }
                     results.addView(noResultsText)
                     return@addOnSuccessListener
                 }
 
                 for (expense in expenseResults) {
-                    val expenseText = TextView(this).apply {
-                        text = "Category: ${expense.category}\n" +
-                                "Amount: R${expense.amount}\n" +
-                                "Date: ${expense.date}\n" +
-                                "Description: ${expense.description}"
-                        textSize = 16f
-                        setPadding(0, 16, 0, 8)
-                    }
-
-                    results.addView(expenseText)
-
-                    if (expense.photoUri.isNotEmpty()) {
-                        val imageView = ImageView(this).apply {
-                            layoutParams = LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT
-                            )
-                            adjustViewBounds = true
-                            scaleType = ImageView.ScaleType.FIT_CENTER
-                        }
-
-                        try {
-                            imageView.setImageURI(Uri.parse(expense.photoUri))
-                            results.addView(imageView)
-                        } catch (e: Exception) {
-                            val imageErrorText = TextView(this).apply {
-                                text = "Image could not be loaded"
-                                textSize = 14f
-                            }
-                            results.addView(imageErrorText)
-                        }
-                    }
+                    addExpenseResultView(expense)
                 }
             }
             .addOnFailureListener { error ->
@@ -169,5 +145,88 @@ class ExpenseSearch : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+    }
+
+    private fun addExpenseResultView(expense: Expense) {
+        val expenseText = TextView(this).apply {
+            text =
+                "Category: ${expense.category}\n" +
+                        "Amount: R%.2f\n".format(expense.amount) +
+                        "Date: ${expense.date}\n" +
+                        "Description: ${expense.description}"
+            textSize = 15f
+            setTextColor(android.graphics.Color.BLACK)
+            setTypeface(null, Typeface.BOLD)
+            setPadding(0, 16, 0, 8)
+        }
+
+        results.addView(expenseText)
+
+        val receiptUri = when {
+            expense.receiptUri.isNotEmpty() -> expense.receiptUri
+            expense.photoUri.isNotEmpty() -> expense.photoUri
+            else -> ""
+        }
+
+        if (receiptUri.isNotEmpty()) {
+            if (expense.receiptType == "pdf") {
+                val pdfText = TextView(this).apply {
+                    text = "PDF receipt attached - tap to open"
+                    textSize = 14f
+                    setTextColor(android.graphics.Color.DKGRAY)
+                    setPadding(0, 8, 0, 8)
+                    setOnClickListener {
+                        openReceipt(receiptUri)
+                    }
+                }
+                results.addView(pdfText)
+            } else {
+                val imageView = ImageView(this).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        350
+                    )
+                    adjustViewBounds = true
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    setPadding(0, 8, 0, 8)
+                    setImageURI(Uri.parse(receiptUri))
+                    setOnClickListener {
+                        openReceipt(receiptUri)
+                    }
+                }
+
+                results.addView(imageView)
+            }
+        } else {
+            val noReceiptText = TextView(this).apply {
+                text = "No receipt attached"
+                textSize = 13f
+                setTextColor(android.graphics.Color.GRAY)
+                setPadding(0, 4, 0, 8)
+            }
+            results.addView(noReceiptText)
+        }
+
+        val divider = android.view.View(this).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                1
+            )
+            setBackgroundColor(android.graphics.Color.parseColor("#EEEEEE"))
+        }
+
+        results.addView(divider)
+    }
+
+    private fun openReceipt(receiptUri: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(Uri.parse(receiptUri), "*/*")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Could not open receipt", Toast.LENGTH_SHORT).show()
+        }
     }
 }
