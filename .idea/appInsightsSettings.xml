@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.prog7313_poe_part2" />
+                  <option name="mobileSdkAppId" value="1:180148510596:android:3b7fcfc231172bd2b5c7d1" />
+                  <option name="projectId" value="prog7313poefirebase" />
+                  <option name="projectNumber" value="180148510596" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
