@@ -38,13 +38,13 @@ class MainActivity : AppCompatActivity() {
         textView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
 
         button.setOnClickListener {
-            val email = editTextText.text.toString().trim()
+            val username = editTextText.text.toString().trim()
             val password = editTextText2.text.toString().trim()
 
-            if (email.isEmpty() || password.isEmpty()) {
+            if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill in all the fields", Toast.LENGTH_SHORT).show()
             } else {
-                login(email, password)
+                login(username, password)
             }
         }
 
