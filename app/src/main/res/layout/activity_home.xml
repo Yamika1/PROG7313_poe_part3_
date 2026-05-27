@@ -7,6 +7,29 @@
     android:layout_height="match_parent"
     tools:context=".Home">
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonAddProfilePic"
+        android:layout_width="129dp"
+        android:layout_height="109dp"
+        android:gravity="bottom|center_horizontal"
+        android:text="@string/add_profile"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:backgroundTint="#DCC605"
+        app:iconTint="@color/black"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/add_photo"
+        app:iconGravity="top"
+        app:iconSize="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.794"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.675"
+        app:strokeColor="@color/black"
+        app:strokeWidth="2dp" />
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -57,19 +80,28 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/textViewGreeting"
-        android:layout_width="183dp"
-        android:layout_height="57dp"
-        android:fontFamily="@font/cherry_bomb_one"
-        android:text="@string/welcome"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonUserGoals"
+        android:layout_width="129dp"
+        android:layout_height="109dp"
+        android:gravity="bottom|center_horizontal"
+        android:text="@string/user_goals"
         android:textColor="@color/black"
-        android:textSize="35sp"
+        app:backgroundTint="#DCC605"
+        app:iconTint="@color/black"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_goal"
+        app:iconGravity="top"
+        app:iconSize="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.106"
+        app:layout_constraintHorizontal_bias="0.234"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/black"
+        app:strokeWidth="2dp" />
         app:layout_constraintVertical_bias="0.104" />
 
     <Button
@@ -91,21 +123,81 @@
         android:layout_height="109dp"
         android:gravity="bottom|center_horizontal"
         android:text="@string/download_statement"
+
+        android:textColor="@color/black"
+        app:backgroundTint="#DCC605"
+        app:iconTint="@color/black"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_document"
+        app:iconGravity="top"
+        app:iconSize="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.234"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.324"
+        app:strokeColor="@color/black"
+        app:strokeWidth="2dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonExpenseEntry"
+        android:layout_width="129dp"
+        android:layout_height="109dp"
+        android:gravity="bottom|center_horizontal"
+        android:text="@string/category_amounts"
+        android:textColor="@color/black"
+        app:backgroundTint="#DCC605"
+        app:iconTint="@color/black"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_money"
+        app:iconGravity="top"
+        app:iconSize="50dp"
+        app:iconTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.794"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/black"
+        app:strokeWidth="2dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonRewards"
+        android:layout_width="129dp"
+        android:layout_height="109dp"
+        android:gravity="bottom|center_horizontal"
+        android:text="@string/Rewards"
+        android:textColor="@color/black"
+        app:layout_constraintVertical_bias="0.326" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonUserGoals"
+        android:layout_width="129dp"
+        android:layout_height="109dp"
+        android:gravity="bottom|center_horizontal"
+        android:text="@string/user_goals"
         android:textColor="#DCC605"
         android:textSize="13sp"
         android:textStyle="bold"
         app:backgroundTint="@color/black"
         app:cornerRadius="12dp"
-        app:icon="@drawable/ic_document"
+        app:icon="@drawable/ic_trophy"
         app:iconGravity="top"
         app:iconSize="50dp"
         app:iconTint="#DCC605"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.056"
+        app:layout_constraintHorizontal_bias="0.234"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.327" />
+        app:layout_constraintVertical_bias="0.675"
+        app:strokeColor="@color/black"
+        app:strokeWidth="2dp" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonExpenseEntry"
@@ -124,54 +216,70 @@
         app:iconTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.943"
+        app:layout_constraintHorizontal_bias="0.794"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.326" />
+        app:layout_constraintVertical_bias="0.324"
+        app:strokeColor="@color/black"
+        app:strokeWidth="2dp" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonUserGoals"
-        android:layout_width="129dp"
-        android:layout_height="109dp"
-        android:gravity="bottom|center_horizontal"
-        android:text="@string/user_goals"
-        android:textColor="#DCC605"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        app:backgroundTint="@color/black"
-        app:cornerRadius="12dp"
-        app:icon="@drawable/ic_goal"
-        app:iconGravity="top"
-        app:iconSize="50dp"
-        app:iconTint="#DCC605"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:background="#080809"
+        android:elevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.485"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.501" />
+        app:layout_constraintVertical_bias="0.0"
+        app:titleTextColor="@android:color/white">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonRewards"
-        android:layout_width="129dp"
-        android:layout_height="109dp"
-        android:gravity="bottom|center_horizontal"
-        android:text="@string/Rewards"
+        <TextView
+            android:id="@+id/appName"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:fontFamily="@font/cherry_bomb_one"
+            android:text="@string/budgetbee"
+            android:textColor="#DCC605"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
+            app:layout_constraintHorizontal_bias="0.087"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.035" />
+
+        <TextView
+            android:id="@+id/textViewUserName"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:paddingEnd="5dp"
+            android:text="@string/logged_in_as_user"
+            android:textColor="#D3D3D3"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:ignore="RtlSymmetry" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/textViewGreeting"
+        android:layout_width="183dp"
+        android:layout_height="57dp"
+        android:fontFamily="@font/cherry_bomb_one"
+        android:text="@string/welcome"
         android:textColor="@color/black"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        app:backgroundTint="#DCC605"
-        app:cornerRadius="12dp"
-        app:icon="@drawable/ic_trophy"
-        app:iconGravity="top"
-        app:iconSize="50dp"
-        app:iconTint="@color/black"
+        android:textSize="35sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.056"
+        app:layout_constraintHorizontal_bias="0.106"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.675" />
+        app:layout_constraintVertical_bias="0.104" />
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonCategoryAmount"
@@ -218,6 +326,25 @@
         app:itemIconTint="#DCC605"
         app:itemTextColor="#DCC605"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_menu" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.206" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/notificationButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        style="@style/Widget.Material3.Button.IconButton"
+        app:icon="@drawable/baseline_notifications_24"
+        app:iconTint="@color/black"
+        app:iconGravity="textStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.099" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

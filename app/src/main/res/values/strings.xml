@@ -63,4 +63,5 @@
     <string name="enter_an_end_date">Enter an end date</string>
     <string name="no_results_found">No results found</string>
     <string name="user_goals">User Goals</string>
+    <string name="add_profile">Add Profile Picture</string>
 </resources>
