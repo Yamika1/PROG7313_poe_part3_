@@ -37,6 +37,8 @@ class Home : AppCompatActivity() {
 
     private lateinit var notificationButton:Button
 
+    private lateinit var notificationDot :TextView
+
     private lateinit var currentBalance: TextView
 
     data class Expense(
@@ -66,13 +68,15 @@ class Home : AppCompatActivity() {
         expenseSearch = findViewById(R.id.expenseSearch)
         buttonUserGoals = findViewById(R.id.buttonUserGoals)
         notificationButton = findViewById(R.id.notificationButton)
+        notificationDot =   findViewById(R.id.notificationDot)
         buttonAddProfilePic = findViewById(R.id.buttonAddProfilePic)
 
         getLoggedInUser()
         getCurrentBalance()
 
         notificationButton.setOnClickListener {
-            checkCurrentMonth()
+            showNotifications()
+            notificationDot.visibility = View.GONE
         }
         buttonDownloadStatement.setOnClickListener {
             openStatementsPage()
@@ -101,7 +105,7 @@ class Home : AppCompatActivity() {
         buttonAddProfilePic.setOnClickListener {
             openProfilePicPage()
         }
-
+        checkCurrentMonth()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -149,13 +153,10 @@ class Home : AppCompatActivity() {
         val uid = FirebaseAuth.getInstance().currentUser!!.uid
 
         FirebaseDatabase.getInstance()
-            .getReference("users")
-            .child(uid)
-            .child("profile")
-            .child("username")
-            .get()
+            .getReference("users").child(uid)
+            .child("profile").child("username").get()
             .addOnSuccessListener { snapshot ->
-                val username = snapshot.getValue(String::class.java)
+              val username = snapshot.getValue(String::class.java)
                 textViewUserName.text = "LOGGED IN AS: $username"
             }
     }
@@ -201,16 +202,19 @@ class Home : AppCompatActivity() {
     }
 
     private fun checkCurrentMonth() {
-        val db = FirebaseDatabase.getInstance().reference
-        val currentMonth = SimpleDateFormat("MM-yyyy", Locale.getDefault()).format(Date())
+        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+        val currentMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
 
-        db.child("goals")
-            .orderByChild("month")
-            .equalTo(currentMonth)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+        FirebaseDatabase.getInstance().reference
+            .child("users").child(uid)
+            .child("goals").orderByChild("month")
+            .equalTo(currentMonth).
+            addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (!snapshot.exists()) {
-                        showNotifications()
+                        notificationDot.visibility = View.VISIBLE
+                    } else {
+                        notificationDot.visibility = View.GONE
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {}
@@ -222,7 +226,7 @@ class Home : AppCompatActivity() {
             .setText("Please enter minimum and maximum goals for this month")
             .setBackgroundColorRes(R.color.blue)
             .enableSwipeToDismiss()
-            .setDuration(5000)
+            .setDuration(3000)
             .setOnClickListener(View.OnClickListener{}).show()
     }
 

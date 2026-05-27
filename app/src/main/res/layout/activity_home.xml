@@ -163,21 +163,28 @@
         app:strokeColor="@color/black"
         app:strokeWidth="2dp" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/notificationButton"
-        style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:icon="@drawable/baseline_notifications_24"
-        app:iconGravity="textStart"
-        app:iconTint="@color/black"
+
+    <FrameLayout
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintHorizontal_bias="0.914"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.099"
-        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+        app:layout_constraintVertical_bias="0.122">
+
+        <TextView
+            android:id="@+id/notificationDot"
+            android:layout_width="11dp"
+            android:layout_height="12dp"
+            android:layout_gravity="end|top"
+            android:background="@drawable/round_button"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </FrameLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonExpenseEntry"
@@ -267,6 +274,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.206" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/notificationButton"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:icon="@drawable/baseline_notifications_24"
+        app:iconGravity="textStart"
+        app:iconTint="@color/black"
+        app:iconSize="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.938"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.121"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
