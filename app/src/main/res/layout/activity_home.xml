@@ -7,6 +7,97 @@
     android:layout_height="match_parent"
     tools:context=".Home">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:background="#080809"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            android:id="@+id/appName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/cherry_bomb_one"
+            android:text="@string/budgetbee"
+            android:textColor="#DCC605"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end|center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingEnd="10dp">
+
+            <ImageView
+                android:id="@+id/imageViewProfile"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/circle_background"
+                android:contentDescription="Profile Picture"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_gallery" />
+
+            <TextView
+                android:id="@+id/textViewUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/logged_in_as_user"
+                android:textColor="#D3D3D3"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonCategoryAmount"
+        android:layout_width="129dp"
+        android:layout_height="109dp"
+        android:gravity="bottom|center_horizontal"
+        android:text="@string/category_amounts"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:backgroundTint="#DCC605"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_money"
+        app:iconGravity="top"
+        app:iconSize="50dp"
+        app:iconTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.794"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.538"
+        app:strokeColor="@color/black"
+        app:strokeWidth="2dp" />
+
+    <Button
+        android:id="@+id/expenseSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/black"
+        android:text="@string/search_expenses"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.224" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonUserGoals"
         android:layout_width="129dp"
@@ -14,19 +105,69 @@
         android:gravity="bottom|center_horizontal"
         android:text="@string/user_goals"
         android:textColor="@color/black"
-        app:backgroundTint="#DCC605"
-        app:iconTint="@color/black"
         android:textSize="13sp"
         android:textStyle="bold"
+        app:backgroundTint="#DCC605"
         app:cornerRadius="12dp"
         app:icon="@drawable/ic_goal"
         app:iconGravity="top"
         app:iconSize="50dp"
+        app:iconTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.234"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.538"
+        app:strokeColor="@color/black"
+        app:strokeWidth="2dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonExpenseEntry"
+        android:layout_width="129dp"
+        android:layout_height="109dp"
+        android:gravity="bottom|center_horizontal"
+        android:text="@string/expense_entry"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:backgroundTint="#DCC605"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_money"
+        app:iconGravity="top"
+        app:iconSize="50dp"
+        app:iconTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.794"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.352"
+        app:strokeColor="@color/black"
+        app:strokeWidth="2dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonDownloadStatement"
+        android:layout_width="129dp"
+        android:layout_height="109dp"
+        android:gravity="bottom|center_horizontal"
+        android:text="@string/download_statement"
+
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:backgroundTint="#DCC605"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_document"
+        app:iconGravity="top"
+        app:iconSize="50dp"
+        app:iconTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.234"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.352"
         app:strokeColor="@color/black"
         app:strokeWidth="2dp" />
 
@@ -36,176 +177,21 @@
         android:layout_height="109dp"
         android:gravity="bottom|center_horizontal"
         android:text="@string/add_profile"
+        android:textColor="@color/black"
         android:textSize="13sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
         app:backgroundTint="#DCC605"
-        app:iconTint="@color/black"
         app:cornerRadius="12dp"
         app:icon="@drawable/add_photo"
         app:iconGravity="top"
         app:iconSize="50dp"
+        app:iconTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.794"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.675"
-        app:strokeColor="@color/black"
-        app:strokeWidth="2dp" />
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="68dp"
-        android:background="#080809"
-        android:elevation="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:titleTextColor="@android:color/white">
-
-        <TextView
-            android:id="@+id/appName"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:fontFamily="@font/cherry_bomb_one"
-            android:text="@string/budgetbee"
-            android:textColor="#DCC605"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/toolbar"
-            app:layout_constraintHorizontal_bias="0.087"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.035"
-            tools:ignore="TextSizeCheck" />
-
-        <TextView
-            android:id="@+id/textViewUserName"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:paddingEnd="5dp"
-            android:text="@string/logged_in_as_user"
-            android:textColor="#D3D3D3"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            tools:ignore="RtlSymmetry,TextSizeCheck"
-            tools:layout_editor_absoluteX="291dp"
-            tools:layout_editor_absoluteY="16dp" />
-    </androidx.appcompat.widget.Toolbar>
-
-    <TextView
-        android:id="@+id/textViewGreeting"
-        android:layout_width="183dp"
-        android:layout_height="57dp"
-        android:fontFamily="@font/cherry_bomb_one"
-        android:text="@string/welcome"
-        android:textColor="@color/black"
-        android:textSize="35sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.106"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.104"
-        tools:ignore="TextSizeCheck" />
-
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonDownloadStatement"
-        android:layout_width="129dp"
-        android:layout_height="109dp"
-        android:gravity="bottom|center_horizontal"
-        android:text="@string/download_statement"
-        android:textColor="@color/black"
-        app:backgroundTint="#DCC605"
-        app:iconTint="@color/black"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        app:cornerRadius="12dp"
-        app:icon="@drawable/ic_document"
-        app:iconGravity="top"
-        app:iconSize="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.234"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.324"
-        app:strokeColor="@color/black"
-        app:strokeWidth="2dp" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonCategoryAmount"
-        android:layout_width="129dp"
-        android:layout_height="109dp"
-        android:gravity="bottom|center_horizontal"
-        android:text="@string/category_amounts"
-        android:textColor="@color/black"
-        app:backgroundTint="#DCC605"
-        app:iconTint="@color/black"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        app:cornerRadius="12dp"
-        app:icon="@drawable/ic_category"
-        app:iconGravity="top"
-        app:iconSize="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.794"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.324"
-        app:strokeColor="@color/black"
-        app:strokeWidth="2dp" />
-
-
-    <FrameLayout
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.914"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.122">
-
-        <TextView
-            android:id="@+id/notificationDot"
-            android:layout_width="11dp"
-            android:layout_height="12dp"
-            android:layout_gravity="end|top"
-            android:background="@drawable/round_button"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-    </FrameLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonExpenseEntry"
-        android:layout_width="129dp"
-        android:layout_height="109dp"
-        android:gravity="bottom|center_horizontal"
-        android:text="@string/expense_entry"
-        android:textColor="@color/black"
-        app:backgroundTint="#DCC605"
-        app:iconTint="@color/black"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        app:cornerRadius="12dp"
-        app:icon="@drawable/ic_money"
-        app:iconGravity="top"
-        app:iconSize="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.794"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.741"
         app:strokeColor="@color/black"
         app:strokeWidth="2dp" />
 
@@ -229,16 +215,32 @@
         app:layout_constraintHorizontal_bias="0.234"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.675"
+        app:layout_constraintVertical_bias="0.741"
         app:strokeColor="@color/black"
         app:strokeWidth="2dp" />
+
+    <TextView
+        android:id="@+id/textViewGreeting"
+        android:layout_width="183dp"
+        android:layout_height="57dp"
+        android:fontFamily="@font/cherry_bomb_one"
+        android:text="@string/welcome"
+        android:textColor="@color/black"
+        android:textSize="35sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.106"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.104" />
+
 
     <TextView
         android:id="@+id/currentBalance"
         android:layout_width="233dp"
         android:layout_height="70dp"
         android:background="@drawable/rounded_balance_text"
-        android:gravity="center_vertical|center_horizontal"
+        android:gravity="center"
         android:text="@string/current_balance_123456_00"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -246,51 +248,43 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.821"
-        tools:ignore="TextSizeCheck" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/bottom_navigation"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_menu"
-        android:background="@color/black"
-        app:itemIconTint="#DCC605"
-        app:itemTextColor="#DCC605"
-        />
-
-    <Button
-        android:id="@+id/expenseSearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/black"
-        android:text="@string/search_expenses"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.206" />
+        app:layout_constraintVertical_bias="0.915" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/notificationButton"
         style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:icon="@drawable/baseline_notifications_24"
         app:iconGravity="textStart"
         app:iconTint="@color/black"
-        app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.938"
+        app:layout_constraintHorizontal_bias="0.955"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.121"
-        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+        app:layout_constraintVertical_bias="0.114"
+        tools:ignore="SpeakableTextPresentCheck" />
 
+    <FrameLayout
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.922"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.127">
+
+        <TextView
+            android:id="@+id/notificationDot"
+            android:layout_width="11dp"
+            android:layout_height="12dp"
+            android:layout_gravity="end|top"
+            android:background="@drawable/round_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -156,7 +156,7 @@ class Home : AppCompatActivity() {
             .getReference("users").child(uid)
             .child("profile").child("username").get()
             .addOnSuccessListener { snapshot ->
-              val username = snapshot.getValue(String::class.java)
+                val username = snapshot.getValue(String::class.java)
                 textViewUserName.text = "LOGGED IN AS: $username"
             }
     }
