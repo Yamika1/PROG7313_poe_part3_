@@ -68,11 +68,8 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(this, Home::class.java))
                     finish()
                 } else {
-                    Toast.makeText(
-                        this,
-                        "Login Failed: ${task.exception?.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this, "Login Failed: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT).show()
                 }
             }
     }

@@ -2,12 +2,8 @@ package com.example.prog7313_poe_part2
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Base64
-import android.util.Log
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -30,8 +26,6 @@ class Home : AppCompatActivity() {
 
     private lateinit var toolbar: Toolbar
     private lateinit var textViewUserName: TextView
-    private lateinit var imageViewProfile: ImageView
-
     private lateinit var buttonDownloadStatement: Button
     private lateinit var buttonCategoryAmount: Button
     private lateinit var buttonRewards: Button
@@ -42,6 +36,8 @@ class Home : AppCompatActivity() {
     private lateinit var buttonAddProfilePic :Button
 
     private lateinit var notificationButton:Button
+
+    private lateinit var notificationDot :TextView
 
     private lateinit var currentBalance: TextView
 
@@ -64,8 +60,6 @@ class Home : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         textViewUserName = findViewById(R.id.textViewUserName)
-        imageViewProfile = findViewById(R.id.imageViewProfile)
-
         buttonDownloadStatement = findViewById(R.id.buttonDownloadStatement)
         buttonCategoryAmount = findViewById(R.id.buttonCategoryAmount)
         buttonRewards = findViewById(R.id.buttonRewards)
@@ -74,14 +68,15 @@ class Home : AppCompatActivity() {
         expenseSearch = findViewById(R.id.expenseSearch)
         buttonUserGoals = findViewById(R.id.buttonUserGoals)
         notificationButton = findViewById(R.id.notificationButton)
+        notificationDot =   findViewById(R.id.notificationDot)
         buttonAddProfilePic = findViewById(R.id.buttonAddProfilePic)
 
         getLoggedInUser()
         getCurrentBalance()
-        loadProfilePicture()
 
         notificationButton.setOnClickListener {
-            checkCurrentMonth()
+            showNotifications()
+            notificationDot.visibility = View.GONE
         }
         buttonDownloadStatement.setOnClickListener {
             openStatementsPage()
@@ -110,7 +105,7 @@ class Home : AppCompatActivity() {
         buttonAddProfilePic.setOnClickListener {
             openProfilePicPage()
         }
-
+        checkCurrentMonth()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -120,11 +115,9 @@ class Home : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun getCurrentBalance() {
-
         val uid = FirebaseAuth.getInstance().currentUser?.uid
 
         if (uid == null) {
-
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
             currentBalance.text = "CURRENT BALANCE: R0.00"
             return
@@ -136,126 +129,71 @@ class Home : AppCompatActivity() {
             .child("expenses")
             .get()
             .addOnSuccessListener { snapshot ->
-
                 var total = 0.0
 
                 for (expenseSnapshot in snapshot.children) {
-
-                    val amount = expenseSnapshot
-                        .child("amount")
-                        .getValue(Double::class.java) ?: 0.0
-
+                    val amount = expenseSnapshot.child("amount").getValue(Double::class.java) ?: 0.0
                     total += amount
                 }
 
                 currentBalance.text = "CURRENT BALANCE: R%.2f".format(total)
             }
-
             .addOnFailureListener { error ->
-
                 Toast.makeText(
                     this,
                     "Failed to load balance: ${error.message}",
                     Toast.LENGTH_SHORT
                 ).show()
-
                 currentBalance.text = "CURRENT BALANCE: R0.00"
             }
     }
 
     @SuppressLint("SetTextI18n")
     private fun getLoggedInUser() {
-
-        val user = FirebaseAuth.getInstance().currentUser
-
-        if (user == null) {
-
-            textViewUserName.text = "LOGGED IN AS: Unknown"
-            return
-        }
-
-        val email = user.email ?: "Unknown user"
-
-        textViewUserName.text = "LOGGED IN AS: $email"
-    }
-
-    private fun loadProfilePicture() {
+        val uid = FirebaseAuth.getInstance().currentUser!!.uid
 
         FirebaseDatabase.getInstance()
-            .getReference("profile_images")
-            .orderByChild("uploadedAt")
-            .limitToLast(1)
-            .get()
-
+            .getReference("users").child(uid)
+            .child("profile").child("username").get()
             .addOnSuccessListener { snapshot ->
-
-                if (snapshot.exists()) {
-
-                    for (child in snapshot.children) {
-
-                        val base64Image =
-                            child.child("imageBase64")
-                                .getValue(String::class.java)
-
-                        if (base64Image != null) {
-
-                            try {
-
-                                val imageBytes =
-                                    Base64.decode(base64Image, Base64.DEFAULT)
-
-                                val bitmap = BitmapFactory.decodeByteArray(
-                                    imageBytes,
-                                    0,
-                                    imageBytes.size
-                                )
-
-                                imageViewProfile.setImageBitmap(bitmap)
-
-                            } catch (e: Exception) {
-
-                                Log.e("HomeProfile", "Decode error: $e")
-                            }
-                        }
-                    }
-                }
-            }
-
-            .addOnFailureListener {
-
-                Log.e("HomeProfile", "Failed to load image")
+                val username = snapshot.getValue(String::class.java)
+                textViewUserName.text = "LOGGED IN AS: $username"
             }
     }
 
     override fun onResume() {
         super.onResume()
-
         getCurrentBalance()
-        loadProfilePicture()
     }
 
     private fun openStatementsPage() {
-        startActivity(Intent(this, Statements::class.java))
+        val intent = Intent(this, Statements::class.java)
+        startActivity(intent)
     }
 
     private fun openRewardsPage() {
-        startActivity(Intent(this, Rewards::class.java))
+        val intent = Intent(this, Rewards::class.java)
+        startActivity(intent)
     }
 
     private fun openCategoryAmountsPage() {
-        startActivity(Intent(this, CategoryAmounts::class.java))
+        val intent = Intent(this, CategoryAmounts::class.java)
+        startActivity(intent)
     }
 
     private fun openExpenseEntryPage() {
-        startActivity(Intent(this, AddExpense::class.java))
+        val intent = Intent(this, AddExpense::class.java)
+        startActivity(intent)
     }
 
     private fun openExpenseSearchPage() {
-        startActivity(Intent(this, ExpenseSearch::class.java))
+        val intent = Intent(this, ExpenseSearch::class.java)
+        startActivity(intent)
     }
 
     private fun openUserGoalsPage() {
-        startActivity(Intent(this, UserGoals::class.java))
+        val intent = Intent(this, UserGoals::class.java)
+        startActivity(intent)
     }
 
     private fun openProfilePicPage(){
@@ -264,16 +202,19 @@ class Home : AppCompatActivity() {
     }
 
     private fun checkCurrentMonth() {
-        val db = FirebaseDatabase.getInstance().reference
-        val currentMonth = SimpleDateFormat("MM-yyyy", Locale.getDefault()).format(Date())
+        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+        val currentMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
 
-        db.child("goals")
-            .orderByChild("month")
-            .equalTo(currentMonth)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+        FirebaseDatabase.getInstance().reference
+            .child("users").child(uid)
+            .child("goals").orderByChild("month")
+            .equalTo(currentMonth).
+            addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (!snapshot.exists()) {
-                        showNotifications()
+                        notificationDot.visibility = View.VISIBLE
+                    } else {
+                        notificationDot.visibility = View.GONE
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {}
@@ -281,13 +222,12 @@ class Home : AppCompatActivity() {
     }
 
     private fun showNotifications() {
-     Alerter.create(this).setTitle("Notification")
-                .setText("Please enter minimum and maximum goals for this month")
-                .setBackgroundColorRes(R.color.blue)
-                .enableSwipeToDismiss()
-                .setDuration(5000)
-                .setOnClickListener(View.OnClickListener{}).show()
-  }
-
+        Alerter.create(this).setTitle("Notification")
+            .setText("Please enter minimum and maximum goals for this month")
+            .setBackgroundColorRes(R.color.blue)
+            .enableSwipeToDismiss()
+            .setDuration(3000)
+            .setOnClickListener(View.OnClickListener{}).show()
     }
 
+}
