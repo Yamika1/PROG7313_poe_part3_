@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -32,14 +33,11 @@ class Home : AppCompatActivity() {
     private lateinit var buttonExpenseEntry: Button
     private lateinit var expenseSearch: Button
     private lateinit var buttonUserGoals: Button
-
-    private lateinit var buttonAddProfilePic :Button
-
-    private lateinit var notificationButton:Button
-
-    private lateinit var notificationDot :TextView
-
+    private lateinit var buttonAddProfilePic: Button
+    private lateinit var notificationButton: Button
+    private lateinit var notificationDot: TextView
     private lateinit var currentBalance: TextView
+    private lateinit var imageViewProfile: ImageView
 
     data class Expense(
         val id: String = "",
@@ -68,44 +66,29 @@ class Home : AppCompatActivity() {
         expenseSearch = findViewById(R.id.expenseSearch)
         buttonUserGoals = findViewById(R.id.buttonUserGoals)
         notificationButton = findViewById(R.id.notificationButton)
-        notificationDot =   findViewById(R.id.notificationDot)
+        notificationDot = findViewById(R.id.notificationDot)
         buttonAddProfilePic = findViewById(R.id.buttonAddProfilePic)
+        imageViewProfile = findViewById(R.id.imageViewProfile)
 
         getLoggedInUser()
         getCurrentBalance()
+        loadProfilePicture()
 
         notificationButton.setOnClickListener {
             showNotifications()
             notificationDot.visibility = View.GONE
         }
-        buttonDownloadStatement.setOnClickListener {
-            openStatementsPage()
-        }
 
-        buttonCategoryAmount.setOnClickListener {
-            openCategoryAmountsPage()
-        }
+        buttonDownloadStatement.setOnClickListener { openStatementsPage() }
+        buttonCategoryAmount.setOnClickListener { openCategoryAmountsPage() }
+        buttonExpenseEntry.setOnClickListener { openExpenseEntryPage() }
+        buttonRewards.setOnClickListener { openRewardsPage() }
+        expenseSearch.setOnClickListener { openExpenseSearchPage() }
+        buttonUserGoals.setOnClickListener { openUserGoalsPage() }
+        buttonAddProfilePic.setOnClickListener { openProfilePicPage() }
 
-        buttonExpenseEntry.setOnClickListener {
-            openExpenseEntryPage()
-        }
-
-        buttonRewards.setOnClickListener {
-            openRewardsPage()
-        }
-
-        expenseSearch.setOnClickListener {
-            openExpenseSearchPage()
-        }
-
-        buttonUserGoals.setOnClickListener {
-            openUserGoalsPage()
-        }
-
-        buttonAddProfilePic.setOnClickListener {
-            openProfilePicPage()
-        }
         checkCurrentMonth()
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -113,10 +96,40 @@ class Home : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        getCurrentBalance()
+        loadProfilePicture()
+    }
+
+    private fun loadProfilePicture() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        FirebaseDatabase.getInstance()
+            .getReference("users")
+            .child(uid)
+            .child("profile")
+            .child("avatarName")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val avatarName = snapshot.getValue(String::class.java) ?: return@addOnSuccessListener
+                val resId = when (avatarName) {
+                    "bee_avatar_one"   -> R.drawable.bee_avatar_one
+                    "bee_avatar_two"   -> R.drawable.bee_avatar_two
+                    "bee_avatar_three" -> R.drawable.bee_avatar_three
+                    "bee_avatar_four"  -> R.drawable.bee_avatar_four
+                    else               -> return@addOnSuccessListener
+                }
+                imageViewProfile.setImageResource(resId)
+            }
+            .addOnFailureListener { error ->
+                Toast.makeText(this, "Failed to load avatar: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun getCurrentBalance() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid
-
         if (uid == null) {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
             currentBalance.text = "CURRENT BALANCE: R0.00"
@@ -130,20 +143,14 @@ class Home : AppCompatActivity() {
             .get()
             .addOnSuccessListener { snapshot ->
                 var total = 0.0
-
                 for (expenseSnapshot in snapshot.children) {
                     val amount = expenseSnapshot.child("amount").getValue(Double::class.java) ?: 0.0
                     total += amount
                 }
-
                 currentBalance.text = "CURRENT BALANCE: R%.2f".format(total)
             }
             .addOnFailureListener { error ->
-                Toast.makeText(
-                    this,
-                    "Failed to load balance: ${error.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Failed to load balance: ${error.message}", Toast.LENGTH_SHORT).show()
                 currentBalance.text = "CURRENT BALANCE: R0.00"
             }
     }
@@ -161,44 +168,32 @@ class Home : AppCompatActivity() {
             }
     }
 
-    override fun onResume() {
-        super.onResume()
-        getCurrentBalance()
-    }
-
     private fun openStatementsPage() {
-        val intent = Intent(this, Statements::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, Statements::class.java))
     }
 
     private fun openRewardsPage() {
-        val intent = Intent(this, Rewards::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, Rewards::class.java))
     }
 
     private fun openCategoryAmountsPage() {
-        val intent = Intent(this, CategoryAmounts::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, CategoryAmounts::class.java))
     }
 
     private fun openExpenseEntryPage() {
-        val intent = Intent(this, AddExpense::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, AddExpense::class.java))
     }
 
     private fun openExpenseSearchPage() {
-        val intent = Intent(this, ExpenseSearch::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, ExpenseSearch::class.java))
     }
 
     private fun openUserGoalsPage() {
-        val intent = Intent(this, UserGoals::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, UserGoals::class.java))
     }
 
-    private fun openProfilePicPage(){
-        val intent = Intent(this, add_profile::class.java)
-        startActivity(intent)
+    private fun openProfilePicPage() {
+        startActivity(Intent(this, add_profile::class.java))
     }
 
     private fun checkCurrentMonth() {
@@ -208,26 +203,23 @@ class Home : AppCompatActivity() {
         FirebaseDatabase.getInstance().reference
             .child("users").child(uid)
             .child("goals").orderByChild("month")
-            .equalTo(currentMonth).
-            addListenerForSingleValueEvent(object : ValueEventListener {
+            .equalTo(currentMonth)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (!snapshot.exists()) {
-                        notificationDot.visibility = View.VISIBLE
-                    } else {
-                        notificationDot.visibility = View.GONE
-                    }
+                    notificationDot.visibility = if (!snapshot.exists()) View.VISIBLE else View.GONE
                 }
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
 
     private fun showNotifications() {
-        Alerter.create(this).setTitle("Notification")
+        Alerter.create(this)
+            .setTitle("Notification")
             .setText("Please enter minimum and maximum goals for this month")
             .setBackgroundColorRes(R.color.blue)
             .enableSwipeToDismiss()
             .setDuration(3000)
-            .setOnClickListener(View.OnClickListener{}).show()
+            .setOnClickListener(View.OnClickListener {})
+            .show()
     }
-
 }
