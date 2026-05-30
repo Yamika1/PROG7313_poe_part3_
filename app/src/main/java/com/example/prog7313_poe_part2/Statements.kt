@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -23,7 +22,7 @@ import com.google.firebase.database.FirebaseDatabase
 
 class Statements : AppCompatActivity() {
 
-    private lateinit var btnBack: ImageView
+
     private lateinit var tvStartDate: TextView
     private lateinit var tvEndDate: TextView
     private lateinit var btnGenerateStatement: Button
@@ -69,7 +68,7 @@ class Statements : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.statements)
 
-        btnBack = findViewById(R.id.btnBack)
+
         tvStartDate = findViewById(R.id.tvStartDate)
         tvEndDate = findViewById(R.id.tvEndDate)
         btnGenerateStatement = findViewById(R.id.btnGenerateStatement)
@@ -77,10 +76,7 @@ class Statements : AppCompatActivity() {
         tvStatementSummary = findViewById(R.id.tvStatementSummary)
         statementResults = findViewById(R.id.statementResults)
 
-        btnBack.setOnClickListener {
-            startActivity(Intent(this, Home::class.java))
-            finish()
-        }
+
 
         tvStartDate.setOnClickListener {
             showDatePicker(tvStartDate)

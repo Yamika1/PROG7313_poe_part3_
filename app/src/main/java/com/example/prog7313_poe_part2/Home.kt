@@ -75,17 +75,52 @@ class Home : AppCompatActivity() {
         loadProfilePicture()
 
         notificationButton.setOnClickListener {
-            showNotifications()
-            notificationDot.visibility = View.GONE
+            val uid = FirebaseAuth.getInstance().currentUser!!.uid
+            val currentMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
+
+            FirebaseDatabase.getInstance().reference
+                .child("users").child(uid)
+                .child("goals").orderByChild("month")
+                .equalTo(currentMonth)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (!snapshot.exists()) {
+                            showNotifications()
+                            notificationDot.visibility = View.GONE
+                        } else {
+                            Toast.makeText(this@Home, "No new notifications", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {}
+                })
         }
 
-        buttonDownloadStatement.setOnClickListener { openStatementsPage() }
-        buttonCategoryAmount.setOnClickListener { openCategoryAmountsPage() }
-        buttonExpenseEntry.setOnClickListener { openExpenseEntryPage() }
-        buttonRewards.setOnClickListener { openRewardsPage() }
-        expenseSearch.setOnClickListener { openExpenseSearchPage() }
-        buttonUserGoals.setOnClickListener { openUserGoalsPage() }
-        buttonAddProfilePic.setOnClickListener { openProfilePicPage() }
+        buttonDownloadStatement.setOnClickListener {
+            openStatementsPage()
+        }
+
+        buttonCategoryAmount.setOnClickListener {
+            openCategoryAmountsPage()
+        }
+
+        buttonExpenseEntry.setOnClickListener {
+            openExpenseEntryPage()
+        }
+
+        buttonRewards.setOnClickListener {
+            openRewardsPage()
+        }
+
+        expenseSearch.setOnClickListener {
+            openExpenseSearchPage()
+        }
+
+        buttonUserGoals.setOnClickListener {
+            openUserGoalsPage()
+        }
+        buttonAddProfilePic.setOnClickListener {
+            openProfilePicPage()
+        }
 
         checkCurrentMonth()
 
@@ -206,7 +241,10 @@ class Home : AppCompatActivity() {
             .equalTo(currentMonth)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    notificationDot.visibility = if (!snapshot.exists()) View.VISIBLE else View.GONE
+                        if (!snapshot.exists())
+                       notificationDot.visibility =  View.VISIBLE
+                        else
+                      notificationDot.visibility =  View.GONE
                 }
                 override fun onCancelled(error: DatabaseError) {}
             })
