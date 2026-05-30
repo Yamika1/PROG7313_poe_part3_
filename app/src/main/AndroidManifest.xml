@@ -11,12 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Prog7313_poe_part2">
-        <activity
-            android:name=".MainActivity2"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
-            android:exported="false" />
+
         <activity
             android:name=".add_profile"
             android:exported="false" />
@@ -50,7 +45,9 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.Prog7313_poe_part2.Splash"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
